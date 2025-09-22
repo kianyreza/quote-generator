@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Generator</title>
+    <style>
+        /* کمی استایل ساده برای ظاهر بهتر */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+        #quote-container {
+            width: 600px;
+            padding: 40px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #quote-content {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        #quote-author {
+            font-style: italic;
+            color: #555;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quote-container">
+        <p id="quote-content">Click the button to get a new quote!</p>
+        <p id="quote-author"></p>
+        <button id="new-quote-btn">New Quote</button>
+    </div>
+
+    <script>
+// 1. گرفتن دسترسی به اِلِمان‌های HTML
+const quoteContentElement = document.getElementById('quote-content');
+const quoteAuthorElement = document.getElementById('quote-author');
+const newQuoteBtn = document.getElementById('new-quote-btn');
+
+// 2. آدرس API بک‌اند که خودمان ساختیم
+const apiUrl = 'http://127.0.0.1:8000/api/random-quote/';
+
+// 3. تابعی برای گرفتن و نمایش جمله قصار
+async function fetchQuote() {
+    try {
+        // نمایش یک پیام لودینگ
+        quoteContentElement.textContent = 'Loading...';
+        quoteAuthorElement.textContent = '';
+
+        // ارسال درخواست به API
+        const response = await fetch(apiUrl);
+        // تبدیل پاسخ به JSON
+        const data = await response.json();
+
+        // نمایش داده‌های جدید در صفحه
+        quoteContentElement.textContent = data.content;
+        quoteAuthorElement.textContent = `- ${data.author}`;
+
+    } catch (error) {
+        // در صورت بروز خطا، یک پیام خطا نمایش بده
+        quoteContentElement.textContent = 'Sorry, something went wrong. Please try again.';
+        console.error('Error fetching quote:', error);
+    }
+}
+
+// 4. اختصاص دادن تابع به رویداد کلیک دکمه
+newQuoteBtn.addEventListener('click', fetchQuote);
+
+// 5. گرفتن اولین جمله قصار به محض باز شدن صفحه
+fetchQuote();    </script>
+
+</body>
+</html>
